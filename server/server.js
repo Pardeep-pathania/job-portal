@@ -6,6 +6,12 @@ import connectDB from './config/db.js'
 
 import * as Sentry from "@sentry/node"
 import { clerkWebhooks } from './controllers/webhooks.js'
+import companyRoutes from './routes/companyRoutes.js'
+import connectCloudinary from './config/cloudinary.js'
+import jobRoutes from './routes/jobRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+
+
 
 
 //initialise express
@@ -13,6 +19,7 @@ const app = express()
 
 //connect to database
 await connectDB()
+await connectCloudinary()
 
 //middlewares 
 app.use(cors())
@@ -26,6 +33,10 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 
 app.post('/webhooks', clerkWebhooks)
+
+app.use('/api/company', companyRoutes)
+app.use('/api/jobs', jobRoutes)
+app.use('/api/users', userRoutes)
 
 // Port
 const PORT = process.env.PORT || 5000
