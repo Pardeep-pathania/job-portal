@@ -1,6 +1,9 @@
 import Quill from 'quill'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { JobCategories, JobLocations } from '../assets/assets'
+import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const AddJob = () => {
 
@@ -12,6 +15,31 @@ const [salary, setSalary] = useState(0)
 
 const editorRef = useRef(null)
 const quillRef = useRef(null)
+const {backendUrl,companyToken} = useContext(AppContext)
+
+const onSubmitHandler = async (e) => {
+    e.preventDefault()
+
+    try {
+        
+       const description =  quillRef.current.root.innerHTML;
+
+        const {data} = await axios.post(backendUrl+'/api/company/post-job',{title, description,location,salary,category,level}, {headers:{ token:companyToken }})
+
+        if(data.success){
+            toast.success(data.message)
+            setTitle('')
+            setSalary(0)
+            quillRef.current.root.innerHTML = ""
+        } else{
+            toast.error(data.message)
+        }
+
+    } catch (error) {
+            toast.error(error.message)
+        
+    }
+}
 
 useEffect(()=>{
     //initiate quill only once
@@ -73,10 +101,10 @@ useEffect(()=>{
 
         <div>
             <p className='mb-2'>Job Salary</p>
-            <input min={0} className='w-full px-3 py-2 border-2 border-gray-300 rounded ' onChange={e=>setSalary(e.target.value)} type="Number" placeholder='2500' />
+            <input min={0} className='w-full px-3 py-2 border-2 border-gray-300 rounded ' onChange={e=>setSalary(Number(e.target.value))} type="Number" placeholder='2500' />
         </div>
 
-        <button className='w-28 py-3 mt-4 bg-black text-white rounded'>Add</button>
+        <button onClick={onSubmitHandler} className='w-28 py-3 mt-4 bg-black text-white rounded'>Add</button>
 
     </form>
   )

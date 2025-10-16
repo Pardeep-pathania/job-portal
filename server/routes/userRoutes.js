@@ -1,5 +1,8 @@
 import express from 'express'
-import { applyForJob, getUserData, getUserJobApplications, updateUserResume } from '../controllers/userController'
+import { applyForJob, getUserData, getUserJobApplications, updateUserResume } from '../controllers/userController.js'
+// import {v2 as cloudinary} from 'cloudinary'
+import upload from '../config/multer.js'
+
 
 const router = express.Router()
 
@@ -13,6 +16,6 @@ router.post ('/apply', applyForJob)
 router.get('/applications', getUserJobApplications)
 
 // Update user profile (resume)
-router.post('/update-resume', upload.singke('resume'), updateUserResume)
+router.post('/update-resume', upload.single('resume'), updateUserResume)
 
 export default router

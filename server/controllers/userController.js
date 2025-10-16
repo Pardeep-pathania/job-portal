@@ -1,5 +1,5 @@
-import JobApplication from "../models/jobApplication"
-import User from "../models/User"
+import JobApplication from "../models/jobApplication.js"
+import User from "../models/User.js"
 
 // Get user data
 export const getUserData = async(req,res) => {
